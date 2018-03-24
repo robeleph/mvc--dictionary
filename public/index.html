@@ -1,0 +1,237 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dictionary</title>
+    <style>
+        #suggestions li{
+            list-style-type: none;
+        }
+        #top{
+            margin-left: 270px;
+        }
+       #main-section {
+            width: 400px;
+            border: 1px solid rgb(158, 118, 89);
+            padding: 10px;
+            background-color: rgb(158,118,89);
+            margin: 00px auto;
+            display:none;
+        }
+        #edit-section{
+            display: none;
+            margin-left: 270px;
+            background-color: rgb(202, 165, 138);
+            width: 400px;
+            border: 1px solid rgb(158, 118, 89);
+            padding: 10px;
+        }
+        section>div {
+            padding: 10px 0;
+        }
+
+        #editBtn{
+            display: none;
+            float:right;
+        }
+         #add-section{
+            display: none;
+            margin-left: 270px;
+            background-color: rgb(179, 163, 153);
+            width: 400px;
+            border: 1px solid rgb(158, 118, 89);
+            padding: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <section id="top">
+        <button id="seachtop" onclick="showSearch()">Search</button>
+        <button id="edittop" onclick="editWord()">Edit</button>
+        <button id="addtop" onclick="showAddSection()">Add</button>
+        
+
+
+
+    </section>
+    <section id="main-section">
+        <div id="logo">
+            </div>
+        <div id='search'>
+            <input id="search-input" type="text">
+            <button id='go'>Search</button>
+        </div>
+        <div id="response">
+            <span class="word"></span>:<br/><span class="meaning"></span>
+            <button id="editBtn" onclick="editWord()">Edit</button>
+        </div>
+
+        <ul id="suggestions">
+
+        </ul>
+    </section>
+
+    <section id="edit-section">
+        <div>
+            EDIT <span id="edit-title"></span>
+        </div>
+        <div>
+            New Definition:<br/>
+            <textarea id="new-definition"></textarea>
+            <button id="commit-edit">Edit</button>
+        </div>
+    </section>
+
+
+    <section id="add-section">
+            
+            <div>
+                Word: <br/><input type="text" id="new-word"/>
+                <br/>Definition:<br/>
+                <textarea id="new-word-definition"></textarea>
+                <button id="commit-add">Add</button>
+            </div>
+        </section>
+
+    <script>
+            let input = document.getElementById('search-input');
+            let goButton = document.getElementById('go');
+            let word = document.getElementsByClassName('word');
+            let meaning = document.getElementsByClassName('meaning');
+            let suggestions = document.getElementById("suggestions");
+            let editBtn = document.getElementById("editBtn");
+            let editSection = document.getElementById("edit-section");
+            let commitEdit = document.getElementById("commit-edit");
+            let newDefinition = document.getElementById("new-definition");
+
+            let commitAdd = document.getElementById("commit-add");
+            let newWord = document.getElementById("new-word");
+            let newWordDefinition = document.getElementById("new-word-definition");
+            let addSection = document.getElementById("add-section");
+            let mainSection = document.getElementById("main-section");
+
+            var showAddSection = function(){
+                addSection.style.display = addSection.style.display == "block"?"none":"block";
+                addSection.style.background-color == "rgb(179, 163, 153);";
+            
+            }
+            
+            var showSearch = function(){
+                mainSection.style.display  = mainSection.style.display == "block"?"none":"block";
+
+            }
+            var showSearch = function(){
+                mainSection.style.display  = mainSection.style.display == "block"?"none":"block";
+            }
+           
+            input.addEventListener("keyup",(event)=>{
+                suggestions.innerHTML = "";
+
+                let keyword = event.target.value;
+
+                let httpRequest = new XMLHttpRequest();
+                
+                httpRequest.onreadystatechange = function(){
+                    if(httpRequest.readyState == XMLHttpRequest.DONE){
+                        if(httpRequest.status == 200){
+                            let results = JSON.parse(httpRequest.responseText);
+                            for(let eachWord of results){
+                                let elem = document.createElement("li")
+                                elem.innerHTML = eachWord.keyword;
+                                elem.onclick = function(){
+                                    input.value = eachWord.keyword;
+                                    searchWord();
+                                };
+                                suggestions.append(elem)
+                            }
+
+                        }else{
+                            meaning[0].textContent = "No suggestion";
+                        }
+                    }
+                }
+                
+                if(keyword){
+                     httpRequest.open('GET', '/suggestion?word=' + keyword, true);
+                    httpRequest.send();
+                }
+               
+
+
+
+            });
+
+            let searchWord = function(){
+
+                let httpRequest = new XMLHttpRequest();
+                var wordText = input.value;
+                word[0].textContent = wordText.toLowerCase();
+                httpRequest.onreadystatechange = function(){
+                    if(httpRequest.readyState == XMLHttpRequest.DONE){
+                        if(httpRequest.status == 200){
+                            let result = JSON.parse(httpRequest.responseText);
+                            meaning[0].textContent = result.definition;
+                            editBtn.style.display = "inline";
+                        
+                        }else{
+                            meaning[0].textContent = "Error! word not found in the dictionary";
+                            editBtn.style.display = "none";
+                        }
+                    }
+                }
+                
+                httpRequest.open('GET', '/dictionary?word=' + wordText, true);
+                httpRequest.send();
+            }
+
+        let editWord = function(event){
+          let temp = word[0].innerHTML;
+          editSection.style.display = "block";
+          
+        };
+
+        commitEdit.addEventListener("click",()=>{
+            editSection.style.display="none";
+            let httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function(){
+                if(httpRequest.readyState == XMLHttpRequest.DONE){
+                    if(httpRequest.status == 200){
+                        alert("successfully edited to "+newDefinition.value);
+                    }else{
+                        alert("there was error while editing...");
+                    }
+                }
+            }
+            
+            httpRequest.open('GET', '/editWord?word=' + word[0].innerHTML+'&definition='+newDefinition.value, true);
+            httpRequest.send();
+
+        });
+
+        
+        commitAdd.addEventListener("click",()=>{
+            editSection.style.display="none";
+            let httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function(){
+                if(httpRequest.readyState == XMLHttpRequest.DONE){
+                    if(httpRequest.status == 200){
+                        alert("successfully added a new word");
+                    }else{
+                        alert("there was error while editing...");
+                    }
+                }
+            }
+  
+            httpRequest.open('GET', '/addWord?word=' +newWord.value+'&definition='+newWordDefinition.value, true);
+            httpRequest.send();
+        });
+
+        goButton.onclick = searchWord; 
+        </script>
+</body>
+
+</html>

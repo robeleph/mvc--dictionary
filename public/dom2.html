@@ -1,0 +1,72 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div {
+            background: #000;
+            width: 300px;
+            height: 200px;
+            margin: 100px auto;
+            color: wheat;
+            font-size: 20px;
+        }
+
+        .cool-theme {
+            background: rgb(18, 111, 250);
+            width: 300px;
+            height: 200px;
+            margin: 100px auto;
+            color: rgb(248, 244, 28);
+            font-size: 25px;
+            padding: 10px;
+            text-align: center;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mydiv" class="box">
+
+    </div>
+    <script>
+
+        var mydiv = document.getElementById('mydiv');
+
+        mydiv.onclick = function () {
+            loadFromServer();
+        }
+
+        function loadFromServer() {
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', '/getinfo', true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                    let jsonResult = JSON.parse(xhr.responseText);
+                    let view = makeView(jsonResult);
+                    mydiv.innerHTML = view;
+                    mydiv.classList.add('cool-theme');
+                }
+            }
+            xhr.send();
+
+        }
+
+        function makeView(jsonResult) {
+            return `
+            <span>Message arrived</span>
+            <section>` + jsonResult.message + `</section>
+            `;
+        }
+    </script>
+</body>
+
+</html>

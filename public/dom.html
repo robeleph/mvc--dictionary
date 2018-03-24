@@ -1,0 +1,97 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div {
+            background: #000;
+            width: 300px;
+            height: 200px;
+            margin: 100px auto;
+            color: wheat;
+            font-size: 20px;
+        }
+
+        .cool-theme {
+            background: rgb(18, 111, 250);
+            width: 300px;
+            height: 200px;
+            margin: 100px auto;
+            color: rgb(248, 244, 28);
+            font-size: 25px;
+            padding: 10px;
+            text-align: center;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mydiv" class="box">
+
+    </div>
+    <script>
+        // get the element for manipulation
+        var mydiv = document.getElementById('mydiv');
+        // var mydiv = document.getElementsByClassName('box')[0];
+        // var mydiv = document.getElementsByTagName('div')[0];
+        // var mydiv = document.querySelectorAll('body>div')[0];
+
+        // creating
+        var mysection = document.createElement('section');
+
+        // change the content
+        mysection.textContent = "Hello world";
+        mysection.innerText = "not hello world";
+        mysection.style.color = "#fff";
+
+        // append, replace and remove child
+        mydiv.appendChild(mysection);
+        // mydiv.replaceChild(mysection, newSection);
+        // mydiv.removeChild(mysection);
+
+        // changing attribute of a tag
+        // mydiv.name = 'mydiv';
+        // mydiv.classList.add('blackbox');
+
+        // handling events
+        mydiv.onclick = function () {
+            this.style.display = 'none';
+            // loadFromServer();
+        }
+
+        function loadFromServer() {
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', '/getinfo', true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // var messageHolder = document.createElement('span');
+                    // messageHolder.style.color = 'white';
+                    // messageHolder.textContent = 'Message Arrived';
+                    // mydiv.appendChild(messageHolder);
+                    // mysection.textContent = xhr.responseText;
+                    // let view = makeView(xhr.responseText);
+                    // mydiv.innerHTML = view;
+                    // mydiv.classList.add('cool-theme');
+                }
+            }
+            xhr.send();
+
+        }
+
+        // function makeView(message) {
+        //     return `
+        //     <span>Message arrived</span>
+        //     <section>` + message + `</section>
+        //     `;
+        // }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #signuptop {
+            width: 400px;
+            border: 1px solid saddlebrown;
+            padding: 10px;
+            margin: 00px auto;
+            margin-left: 20px;
+        }
+
+      
+        #signintop {
+            width: 400px;
+            border: 1px solid saddlebrown;
+            padding: 10px;
+            margin: -200px auto;
+            float: right;
+            margin-right: 50px;
+        }
+
+      
+    </style>
+</head>
+
+<body>
+    <section id="signuptop">
+        <div>
+            <h1>sign up</h1>
+        </div>
+        <div>
+            <form action="/register" method="GET">
+                USERNAME: <input type="text" name="username"/><br/>
+                PASSWORD: <input type="password" name="password"/><br/><br/>
+                <input id="signup" type="submit" value="Sign up"/>
+            </form>
+        </div>
+        </section>
+        <section id="signintop">
+                <div>
+                    <h1>sign in</h1>
+                </div>
+                <div>
+                    <form action="/login" method="GET">
+                        USERNAME: <input type="text" name="username"/><br/>
+                        PASSWORD: <input type="password" name="password"/><br/><br/>
+                        <input type="submit" value="Sign in"/>
+                    </form>
+                </div>
+                </section>
+        
+
+</body>
+<script>
+    let signup = document.getElementById("signup");
+
+    signup.addEventListener("click",()=>{
+            editSection.style.display="none";
+            let httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function(){
+                if(httpRequest.readyState == XMLHttpRequest.DONE){
+                    if(httpRequest.status == 200){
+                        alert("You've successfully signed up");
+                    }else{
+                        alert("There seems to be a problem.");
+                    }
+                }
+            }
+  
+            httpRequest.open('GET', '/register?username=' +username.value+'&password='+passwor.value=, true);
+            httpRequest.send();
+        });
+
+</script>
+
+</html>
